@@ -1,0 +1,8 @@
+let s=JSON.parse(localStorage.getItem("tg")||'{"goal":1000,"followers":0,"points":0,"tasks":0,"streak":0,"done":[],"dark":false}');
+const tasks=[["video","🎬 Bugün bir video paylaş",20],["comment","💬 5 yoruma cevap ver",15],["profile","👤 Profilini güncelle",10],["discover","🔎 10 içerik keşfet",10],["idea","💡 1 içerik fikri kaydet",10]];
+function save(){localStorage.setItem("tg",JSON.stringify(s));render()}
+function render(){document.body.classList.toggle("dark",s.dark);followers.textContent=s.followers.toLocaleString("tr-TR");goal.textContent=s.goal.toLocaleString("tr-TR");goalInput.value=s.goal;points.textContent=s.points;tasksEl=s.tasks;document.getElementById("tasks").textContent=s.tasks;streak.textContent=s.streak;let p=Math.min(100,Math.round(s.followers/s.goal*100));progress.style.width=p+"%";percent.textContent=p+"% tamamlandı";taskList.innerHTML=tasks.map(x=>{let d=s.done.includes(x[0]);return `<div class="task ${d?"done":""}"><div><b>${x[1]}</b><br><small>+${x[2]} puan</small></div><button ${d?"disabled":""} onclick="done('${x[0]}',${x[2]})">${d?"Tamamlandı":"Tamamla"}</button></div>`}).join("")}
+function done(id,p){if(s.done.includes(id))return;s.done.push(id);s.points+=p;s.tasks++;s.streak=Math.max(1,s.streak);save()}
+saveGoal.onclick=()=>{let n=+goalInput.value;if(n>0){s.goal=n;save()}}
+calc.onclick=()=>{let c=+current.value,t=+target.value,d=+days.value;result.textContent=(t>c&&d>0)?`Günde ortalama ${Math.ceil((t-c)/d)} yeni takipçi hedeflemelisin.`:"Bilgileri kontrol et."}
+theme.onclick=()=>{s.dark=!s.dark;save()};render();
